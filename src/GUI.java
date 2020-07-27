@@ -11,6 +11,7 @@ import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,14 +35,14 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.text.NumberFormatter;
 
 public class GUI extends JFrame implements ActionListener {
-	private JTextField tA, tB, tC, tA2;
-	private JLabel lA, lB, lC, lA2;
-	private JButton bWyjœcie, bSystem, bLosowy, bSortuj, bKeno, bLotto, bMiniLotto;
+	private JTextField startingRangeNumberInput, endRangeNumberInput, amountOfRandomNumbersInput, amountOfSetsInput;
+	private JLabel startingRangeNumberDescription, endRangeNumberDescription, amountOfRandomNumbersDescription, amountOfSetsDescription;
+	private JButton buttonExit, buttonSystem, buttonRandom, buttonSort, buttonKeno, buttonLotto, buttonMiniLotto;
 	private String text = "";
-	private JTextArea tWynik, tInfo;
-	private int first, second, third, fourth;
-	private double cenaZak³adu;
-	private boolean system;
+	private JTextArea textAreaResults, textAreaInfo;
+	private int startingRangeNumberValue, endRangeNumberValue, amountOfRandomNumbersValue, amountOfSetsValue;
+	private double betPrice;
+	private boolean systemSet;
 	List<List<Integer>> lists = new ArrayList<List<Integer>>();
 	
 	Random random = new Random();
@@ -64,134 +65,134 @@ public class GUI extends JFrame implements ActionListener {
 		
 	
 
-		lA = new JLabel("Jaki zakres liczb? od", JLabel.RIGHT);
-		lA.setBounds(0, 10, 140, 20);
-		lA.setForeground (Color.white);
-		lA.setFont(new Font("Verdana", Font.BOLD, 12));
-		tA = new JFormattedTextField(NumberFormat.getInstance());
-		tA.setBounds(160, 10, 50, 25);
-		tA.setBackground(Color.GRAY);
-		tA.setFont(new Font("Verdana", Font.BOLD, 12));
-		add(tA);
-		add(lA);
+		startingRangeNumberDescription = new JLabel("Jaki zakres liczb? od", JLabel.RIGHT);
+		startingRangeNumberDescription.setBounds(0, 10, 140, 20);
+		startingRangeNumberDescription.setForeground (Color.white);
+		startingRangeNumberDescription.setFont(new Font("Verdana", Font.BOLD, 12));
+		startingRangeNumberInput = new JFormattedTextField(NumberFormat.getInstance());
+		startingRangeNumberInput.setBounds(160, 10, 50, 25);
+		startingRangeNumberInput.setBackground(Color.GRAY);
+		startingRangeNumberInput.setFont(new Font("Verdana", Font.BOLD, 12));
+		add(startingRangeNumberInput);
+		add(startingRangeNumberDescription);
 
-		lA2 = new JLabel("do", JLabel.RIGHT);
-		lA2.setBounds(0, 10, 235, 20);
-		lA2.setForeground (Color.white);
-		lA2.setFont(new Font("Verdana", Font.BOLD, 12));
-		tA2 = new JFormattedTextField(NumberFormat.getInstance());
-		tA2.setBounds(250, 10, 50, 25);
-		tA2.setBackground(Color.GRAY);
-		tA2.setFont(new Font("Verdana", Font.BOLD, 12));
-		add(tA2);
-		add(lA2);
+		endRangeNumberDescription = new JLabel("do", JLabel.RIGHT);
+		endRangeNumberDescription.setBounds(0, 10, 235, 20);
+		endRangeNumberDescription.setForeground (Color.white);
+		endRangeNumberDescription.setFont(new Font("Verdana", Font.BOLD, 12));
+		endRangeNumberInput = new JFormattedTextField(NumberFormat.getInstance());
+		endRangeNumberInput.setBounds(250, 10, 50, 25);
+		endRangeNumberInput.setBackground(Color.GRAY);
+		endRangeNumberInput.setFont(new Font("Verdana", Font.BOLD, 12));
+		add(endRangeNumberInput);
+		add(endRangeNumberDescription);
 		
-		bKeno = new JButton("KENO");
-		bKeno.setBounds(305, 10, 60, 25);
-		bKeno.addActionListener(this);
-		bKeno.setBackground (Color.yellow);
-		bKeno.setFont(new Font("Verdana", Font.BOLD, 8));
-		add(bKeno);
+		buttonKeno = new JButton("KENO");
+		buttonKeno.setBounds(305, 10, 60, 25);
+		buttonKeno.addActionListener(this);
+		buttonKeno.setBackground (Color.yellow);
+		buttonKeno.setFont(new Font("Verdana", Font.BOLD, 8));
+		add(buttonKeno);
 		
-		bLotto = new JButton("LOTTO");
-		bLotto.setBounds(370, 10, 60, 25);
-		bLotto.addActionListener(this);
-		bLotto.setBackground (Color.yellow);
-		bLotto.setFont(new Font("Verdana", Font.BOLD, 8));
-		add(bLotto);
+		buttonLotto = new JButton("LOTTO");
+		buttonLotto.setBounds(370, 10, 60, 25);
+		buttonLotto.addActionListener(this);
+		buttonLotto.setBackground (Color.yellow);
+		buttonLotto.setFont(new Font("Verdana", Font.BOLD, 8));
+		add(buttonLotto);
 		
-		bMiniLotto = new JButton("MINI");
-		bMiniLotto.setBounds(435, 10, 60, 25);
-		bMiniLotto.addActionListener(this);
-		bMiniLotto.setBackground (Color.yellow);
-		bMiniLotto.setFont(new Font("Verdana", Font.BOLD, 8));
-		add(bMiniLotto);
+		buttonMiniLotto = new JButton("MINI");
+		buttonMiniLotto.setBounds(435, 10, 60, 25);
+		buttonMiniLotto.addActionListener(this);
+		buttonMiniLotto.setBackground (Color.yellow);
+		buttonMiniLotto.setFont(new Font("Verdana", Font.BOLD, 8));
+		add(buttonMiniLotto);
 
-		lB = new JLabel("Ile liczb wylosowaæ?", JLabel.RIGHT);
-		lB.setBounds(0, 40, 140, 20);
-		lB.setForeground (Color.white);
-		lB.setFont(new Font("Verdana", Font.BOLD, 12));
-		tB = new JFormattedTextField(NumberFormat.getInstance());
-		tB.setBounds(205, 40, 50, 25);
-		tB.setBackground(Color.GRAY);
-		tB.setFont(new Font("Verdana", Font.BOLD, 12));
-		add(tB);
-		add(lB);
+		amountOfRandomNumbersDescription = new JLabel("Ile liczb wylosowaæ?", JLabel.RIGHT);
+		amountOfRandomNumbersDescription.setBounds(0, 40, 140, 20);
+		amountOfRandomNumbersDescription.setForeground (Color.white);
+		amountOfRandomNumbersDescription.setFont(new Font("Verdana", Font.BOLD, 12));
+		amountOfRandomNumbersInput = new JFormattedTextField(NumberFormat.getInstance());
+		amountOfRandomNumbersInput.setBounds(205, 40, 50, 25);
+		amountOfRandomNumbersInput.setBackground(Color.GRAY);
+		amountOfRandomNumbersInput.setFont(new Font("Verdana", Font.BOLD, 12));
+		add(amountOfRandomNumbersInput);
+		add(amountOfRandomNumbersDescription);
 
-		lC = new JLabel("Ile zestawów utworzyæ?", JLabel.RIGHT);
-		lC.setBounds(0, 70, 165, 20);
-		lC.setForeground (Color.white);
-		lC.setFont(new Font("Verdana", Font.BOLD, 12));
-		tC = new JFormattedTextField(NumberFormat.getInstance());
-		tC.setBounds(205, 70, 50, 25);
-		tC.setBackground(Color.GRAY);
-		tC.setFont(new Font("Verdana", Font.BOLD, 12));
-		add(tC);
-		add(lC);
+		amountOfSetsDescription = new JLabel("Ile zestawów utworzyæ?", JLabel.RIGHT);
+		amountOfSetsDescription.setBounds(0, 70, 165, 20);
+		amountOfSetsDescription.setForeground (Color.white);
+		amountOfSetsDescription.setFont(new Font("Verdana", Font.BOLD, 12));
+		amountOfSetsInput = new JFormattedTextField(NumberFormat.getIntegerInstance());
+		amountOfSetsInput.setBounds(205, 70, 50, 25);
+		amountOfSetsInput.setBackground(Color.GRAY);
+		amountOfSetsInput.setFont(new Font("Verdana", Font.BOLD, 12));
+		add(amountOfSetsInput);
+		add(amountOfSetsDescription);
 
-		bSystem = new JButton("Zestawy systemowe");
-		bSystem.setBounds(5, 105, 170, 30);
-		bSystem.addActionListener(this);
-		bSystem.setBackground(Color.yellow);
-		bSystem.setFont(new Font("Verdana", Font.BOLD, 12));
-		add(bSystem);
+		buttonSystem = new JButton("Zestawy systemowe");
+		buttonSystem.setBounds(5, 105, 170, 30);
+		buttonSystem.addActionListener(this);
+		buttonSystem.setBackground(Color.yellow);
+		buttonSystem.setFont(new Font("Verdana", Font.BOLD, 12));
+		add(buttonSystem);
 
-		bLosowy = new JButton("Zestawy losowe");
-		bLosowy.setBounds(200, 105, 150, 30);
-		bLosowy.addActionListener(this);
-		bLosowy.setBackground(Color.yellow);
-		bLosowy.setFont(new Font("Verdana", Font.BOLD, 12));
-		add(bLosowy);
+		buttonRandom = new JButton("Zestawy losowe");
+		buttonRandom.setBounds(200, 105, 150, 30);
+		buttonRandom.addActionListener(this);
+		buttonRandom.setBackground(Color.yellow);
+		buttonRandom.setFont(new Font("Verdana", Font.BOLD, 12));
+		add(buttonRandom);
 		
-		bWyjœcie = new JButton("Wyjœcie");
-		bWyjœcie.setBounds(365, 105, 85, 30);
-		bWyjœcie.addActionListener(this);
-		bWyjœcie.setForeground (Color.red);
-		bWyjœcie.setFont(new Font("Verdana", Font.BOLD, 12));
-		add(bWyjœcie);
+		buttonExit = new JButton("Wyjœcie");
+		buttonExit.setBounds(365, 105, 85, 30);
+		buttonExit.addActionListener(this);
+		buttonExit.setForeground (Color.red);
+		buttonExit.setFont(new Font("Verdana", Font.BOLD, 12));
+		add(buttonExit);
 		
-		bSortuj = new JButton("Sortuj");
-		bSortuj.setBounds(365, 70, 85, 30);
-		bSortuj.addActionListener(this);
-		bSortuj.setBackground (Color.yellow);
-		bSortuj.setFont(new Font("Verdana", Font.BOLD, 12));
-		add(bSortuj);
+		buttonSort = new JButton("Sortuj");
+		buttonSort.setBounds(365, 70, 85, 30);
+		buttonSort.addActionListener(this);
+		buttonSort.setBackground (Color.yellow);
+		buttonSort.setFont(new Font("Verdana", Font.BOLD, 12));
+		add(buttonSort);
 
-		tWynik = new JTextArea(text);
-		JScrollPane scrollPane = new JScrollPane(tWynik);
-		tWynik.setEditable(false);
-		tWynik.setBackground(Color.GRAY);
-		tWynik.setFont(new Font("Verdana", Font.BOLD, 12));
+		textAreaResults = new JTextArea(text);
+		JScrollPane scrollPane = new JScrollPane(textAreaResults);
+		textAreaResults.setEditable(false);
+		textAreaResults.setBackground(Color.GRAY);
+		textAreaResults.setFont(new Font("Verdana", Font.BOLD, 12));
 		scrollPane.setBounds(10, 300, 450, 250);
 		add(scrollPane);
 		
-		tInfo = new JTextArea(text);
-		tInfo.setEditable(false);
-		tInfo.setBackground(Color.darkGray);
-		tInfo.setFont(new Font("Verdana", Font.BOLD, 12));
-		tInfo.setForeground (Color.white);
-		tInfo.setBounds(10, 140, 450, 150);
-		add(tInfo);
+		textAreaInfo = new JTextArea(text);
+		textAreaInfo.setEditable(false);
+		textAreaInfo.setBackground(Color.darkGray);
+		textAreaInfo.setFont(new Font("Verdana", Font.BOLD, 12));
+		textAreaInfo.setForeground (Color.white);
+		textAreaInfo.setBounds(10, 140, 450, 150);
+		add(textAreaInfo);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		Object zród³o = e.getSource();
-		if (zród³o == bWyjœcie) {
+		Object source = e.getSource();
+		if (source == buttonExit) {
 			dispose();
 		}
 
-		if (zród³o == bSystem) {
+		if (source == buttonSystem) {
 			lists.clear();
-			generujZestawySystemowe();
+			createSystemSets();
 		}
 		
-		if (zród³o == bLosowy) {
+		if (source == buttonRandom) {
 			lists.clear();
-			generujZestawyLosowe();
+			createRandomSets();
 		}
 		
-		if (zród³o == bSortuj) {
+		if (source == buttonSort) {
 			
 			try {
 				sortuj();
@@ -201,96 +202,96 @@ public class GUI extends JFrame implements ActionListener {
 			}
 		}
 		
-		if (zród³o == bKeno) {
-			tA.setText("1");
-			tA2.setText("70");
-			tB.setText("10");
-			tC.setText("10");
-			cenaZak³adu = 2;
+		if (source == buttonKeno) {
+			startingRangeNumberInput.setText("1");
+			endRangeNumberInput.setText("70");
+			amountOfRandomNumbersInput.setText("10");
+			amountOfSetsInput.setText("10");
+			betPrice = 2;
 		}
 		
-		if (zród³o == bLotto) {
-			tA.setText("1");
-			tA2.setText("49");
-			tB.setText("6");
-			tC.setText("10");
-			cenaZak³adu = 4;
+		if (source == buttonLotto) {
+			startingRangeNumberInput.setText("1");
+			endRangeNumberInput.setText("49");
+			amountOfRandomNumbersInput.setText("6");
+			amountOfSetsInput.setText("10");
+			betPrice = 4;
 		}
 		
-		if (zród³o == bMiniLotto) {
-			tA.setText("1");
-			tA2.setText("42");
-			tB.setText("5");
-			tC.setText("10");
-			cenaZak³adu = 1.5;
+		if (source == buttonMiniLotto) {
+			startingRangeNumberInput.setText("1");
+			endRangeNumberInput.setText("42");
+			amountOfRandomNumbersInput.setText("5");
+			amountOfSetsInput.setText("10");
+			betPrice = 1.5;
 		}
 
 	}
 
 	
 	public void sortuj() throws IOException {
-		tWynik.setText("");
+		textAreaResults.setText("");
 		for (int i = 0; i < lists.size(); i++) {
 			Collections.sort(lists.get(i));
 			text = lists.get(i).toString().replace("[", "").replace("]", "");
-			if (system == true && i > 1 && i % 3 == 0) {
-					tWynik.append("\n");
+			if (systemSet == true && i > 1 && i % 3 == 0) {
+					textAreaResults.append("\n");
 			}
-			tWynik.append(text + "\n");
+			textAreaResults.append(text + "\n");
 		}
 	}
 	
-	public void generujZestawySystemowe() {
-		system = true;
-		if (tA.getText().isEmpty() || tB.getText().isEmpty() || tC.getText().isEmpty() || tA2.getText().isEmpty()) {
-			tInfo.setText("1. Wype³nij wszystkie pola liczbami." + "\n");
+	public void createSystemSets() {
+		systemSet = true;
+		if (startingRangeNumberInput.getText().isEmpty() || amountOfRandomNumbersInput.getText().isEmpty() || amountOfSetsInput.getText().isEmpty() || endRangeNumberInput.getText().isEmpty()) {
+			textAreaInfo.setText("1. Wype³nij wszystkie pola liczbami." + "\n");
 		} else {
-			first = Integer.parseInt(tA.getText());
-			second = Integer.parseInt(tA2.getText());
-			third = Integer.parseInt(tB.getText());
-			fourth = Integer.parseInt(tC.getText());
+			startingRangeNumberValue = Integer.parseInt(startingRangeNumberInput.getText());
+			endRangeNumberValue = Integer.parseInt(endRangeNumberInput.getText());
+			amountOfRandomNumbersValue = Integer.parseInt(amountOfRandomNumbersInput.getText());
+			amountOfSetsValue = Integer.parseInt(amountOfSetsInput.getText());
 			
 
-			tWynik.setText("");
-			tInfo.setText("");
+			textAreaResults.setText("");
+			textAreaInfo.setText("");
 			
-			if (first == 0) {
-				first = 1;
-				tA.setText(String.valueOf(first));
-				tInfo.append("2. Pocz¹tek zakresu musi byæ wiêkszy od 0." + "\n");
+			if (startingRangeNumberValue == 0) {
+				startingRangeNumberValue = 1;
+				startingRangeNumberInput.setText(String.valueOf(startingRangeNumberValue));
+				textAreaInfo.append("2. Pocz¹tek zakresu musi byæ wiêkszy od 0." + "\n");
 				
 			}
 			
-			if (second == 0 || second < first) {
-				second = first + 1;
-				tA2.setText(String.valueOf(second));
-				tInfo.append("3. Koniec zakresu nie mo¿e byæ mniejszy ni¿ pocz¹tek." + "\n");
+			if (endRangeNumberValue == 0 || endRangeNumberValue < startingRangeNumberValue) {
+				endRangeNumberValue = startingRangeNumberValue + 1;
+				endRangeNumberInput.setText(String.valueOf(endRangeNumberValue));
+				textAreaInfo.append("3. Koniec zakresu nie mo¿e byæ mniejszy ni¿ pocz¹tek." + "\n");
 			}
 			
-			if (third == 0) {
-				third = 1;
-				tB.setText(String.valueOf(third));
-				tInfo.append("4. Iloœæ liczb musi byæ wiêksza od 0." + "\n");
+			if (amountOfRandomNumbersValue == 0) {
+				amountOfRandomNumbersValue = 1;
+				amountOfRandomNumbersInput.setText(String.valueOf(amountOfRandomNumbersValue));
+				textAreaInfo.append("4. Iloœæ liczb musi byæ wiêksza od 0." + "\n");
 			}
 			
-			if (third >(second - first)) {
-				third = (second - first);
-				tB.setText(String.valueOf(third));
-				tInfo.append("5. Iloœæ liczb nie mo¿e byæ wiêksza od zakresu liczb." + "\n");
+			if (amountOfRandomNumbersValue >(endRangeNumberValue - startingRangeNumberValue)) {
+				amountOfRandomNumbersValue = (endRangeNumberValue - startingRangeNumberValue);
+				amountOfRandomNumbersInput.setText(String.valueOf(amountOfRandomNumbersValue));
+				textAreaInfo.append("5. Iloœæ liczb nie mo¿e byæ wiêksza od zakresu liczb." + "\n");
 			}
 			
-			if (fourth == 0) {
-				fourth = 1;
-				tC.setText(String.valueOf(fourth));
-				tInfo.append("6. Iloœæ zestawów musi byæ wiêksza od 0." + "\n");
+			if (amountOfSetsValue == 0) {
+				amountOfSetsValue = 1;
+				amountOfSetsInput.setText(String.valueOf(amountOfSetsValue));
+				textAreaInfo.append("6. Iloœæ zestawów musi byæ wiêksza od 0." + "\n");
 				
 			}
 			
 			
-			for (int i = 0; i < fourth; i++) {
+			for (int i = 0; i < amountOfSetsValue; i++) {
 
-				while (set.size() < third) {
-					set.add(random.nextInt(second - first) + first);
+				while (set.size() < amountOfRandomNumbersValue) {
+					set.add(random.nextInt(endRangeNumberValue - startingRangeNumberValue) + startingRangeNumberValue);
 				}
 
 				List<Integer> list1 = new ArrayList<>(set);
@@ -309,90 +310,90 @@ public class GUI extends JFrame implements ActionListener {
 				}
 
 				text = list3.toString().replace("[", "").replace("]", "");
-				tWynik.append(text + "\n");
+				textAreaResults.append(text + "\n");
 				lists.add(list3);
 
 				text = list1.toString().replace("[", "").replace("]", "");
-				tWynik.append(text + "\n");
+				textAreaResults.append(text + "\n");
 				lists.add(list1);
 
 				for (Integer number : list1) {
-					if (number < second) {
+					if (number < endRangeNumberValue) {
 						number = number + 1;
 					} else {
-						number = second;
+						number = endRangeNumberValue;
 					}
 					list2.add(number);
 				}
 				text = list2.toString().replace("[", "").replace("]", "");
-				tWynik.append(text + "\n" + "\n");
+				textAreaResults.append(text + "\n" + "\n");
 				lists.add(list2);
 			}
 			
-			tInfo.append("\n" + "Wygenerowano " + 3 * (fourth) + " zak³adów po " + cenaZak³adu + " z³ = " + (3 * (fourth)) * cenaZak³adu + " z³");
+			textAreaInfo.append("\n" + "Wygenerowano " + 3 * (amountOfSetsValue) + " zak³adów po " + betPrice + " z³ = " + (3 * (amountOfSetsValue)) * betPrice + " z³");
 		}
 
 	}
 	
-	public void generujZestawyLosowe() {
-		system = false;
-		if (tA.getText().isEmpty() || tB.getText().isEmpty() || tC.getText().isEmpty() || tA2.getText().isEmpty()) {
-			tInfo.setText("Wype³nij wszystkie pola liczbami");
+	public void createRandomSets() {
+		systemSet = false;
+		if (startingRangeNumberInput.getText().isEmpty() || amountOfRandomNumbersInput.getText().isEmpty() || amountOfSetsInput.getText().isEmpty() || endRangeNumberInput.getText().isEmpty()) {
+			textAreaInfo.setText("Wype³nij wszystkie pola liczbami");
 		} else {
 			
-			int first = Integer.parseInt(tA.getText());
-			int second = Integer.parseInt(tB.getText());
-			int third = Integer.parseInt(tC.getText());
-			int fourth = Integer.parseInt(tA2.getText());
-
-			tWynik.setText("");
-			tInfo.setText("");
+			startingRangeNumberValue = Integer.parseInt(startingRangeNumberInput.getText());
+			endRangeNumberValue = Integer.parseInt(endRangeNumberInput.getText());
+			amountOfRandomNumbersValue = Integer.parseInt(amountOfRandomNumbersInput.getText());
+			amountOfSetsValue = Integer.parseInt(amountOfSetsInput.getText());
 			
-			if (first == 0) {
-				first = 1;
-				tA.setText(String.valueOf(first));
-				tInfo.append("2. Pocz¹tek zakresu musi byæ wiêkszy od 0." + "\n");
+			textAreaResults.setText("");
+			textAreaInfo.setText("");
+			
+			if (startingRangeNumberValue == 0) {
+				startingRangeNumberValue = 1;
+				startingRangeNumberInput.setText(String.valueOf(startingRangeNumberValue));
+				textAreaInfo.append("2. Pocz¹tek zakresu musi byæ wiêkszy od 0." + "\n");
 				
 			}
 			
-			if (fourth == 0 || fourth < first) {
-				fourth = first + 1;
-				tA2.setText(String.valueOf(fourth));
-				tInfo.append("3. Koniec zakresu nie mo¿e byæ mniejszy ni¿ pocz¹tek." + "\n");
+			if (endRangeNumberValue == 0 || endRangeNumberValue < startingRangeNumberValue) {
+				endRangeNumberValue = startingRangeNumberValue + 1;
+				endRangeNumberInput.setText(String.valueOf(endRangeNumberValue));
+				textAreaInfo.append("3. Koniec zakresu nie mo¿e byæ mniejszy ni¿ pocz¹tek." + "\n");
 			}
 			
-			if (second == 0) {
-				second = 1;
-				tB.setText(String.valueOf(second));
-				tInfo.append("4. Iloœæ liczb musi byæ wiêksza od 0." + "\n");
+			if (amountOfRandomNumbersValue == 0) {
+				amountOfRandomNumbersValue = 1;
+				amountOfRandomNumbersInput.setText(String.valueOf(amountOfRandomNumbersValue));
+				textAreaInfo.append("4. Iloœæ liczb musi byæ wiêksza od 0." + "\n");
 			}
 			
-			if (second >(fourth - first)) {
-				second = (fourth - first);
-				tB.setText(String.valueOf(second));
-				tInfo.append("5. Iloœæ liczb nie mo¿e byæ wiêksza od zakresu liczb." + "\n");
+			if (amountOfRandomNumbersValue >(endRangeNumberValue - startingRangeNumberValue)) {
+				amountOfRandomNumbersValue = (endRangeNumberValue - startingRangeNumberValue);
+				amountOfRandomNumbersInput.setText(String.valueOf(amountOfRandomNumbersValue));
+				textAreaInfo.append("5. Iloœæ liczb nie mo¿e byæ wiêksza od zakresu liczb." + "\n");
 			}
 			
-			if (third == 0) {
-				third = 1;
-				tC.setText(String.valueOf(third));
-				tInfo.append("6. Iloœæ zestawów musi byæ wiêksza od 0." + "\n");
+			if (amountOfSetsValue == 0) {
+				amountOfSetsValue = 1;
+				amountOfSetsInput.setText(String.valueOf(amountOfSetsValue));
+				textAreaInfo.append("6. Iloœæ zestawów musi byæ wiêksza od 0." + "\n");
 				
 			}
 			
 			
-			for (int i = 0; i < third; i++) {
-				while (set.size() < second) {
-					set.add(random.nextInt(fourth)+1);
+			for (int i = 0; i < amountOfSetsValue; i++) {
+				while (set.size() < amountOfRandomNumbersValue) {
+					set.add(random.nextInt(endRangeNumberValue)+1);
 				}
 				List<Integer> list = new ArrayList<>(set);
 				lists.add(list);
 				set.removeAll(set);
 			}
 			text = lists.toString().replace("], ", "\n").replace("[", "").replace("]", "");
-			tWynik.setText(text);
+			textAreaResults.setText(text);
 			
-			tInfo.append("\n" + "Wygenerowano " + third + " zak³adów po " + cenaZak³adu + " z³ = " + (cenaZak³adu * third) + " z³");
+			textAreaInfo.append("\n" + "Wygenerowano " + amountOfSetsValue + " zak³adów po " + betPrice + " z³ = " + (betPrice * amountOfSetsValue) + " z³");
 		}
 		
 	}
